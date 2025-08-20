@@ -1,0 +1,317 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Generador de Contraseñas Seguras</title>
+    <link rel="stylesheet" href="css/styles.css">
+    <!-- 
+        ESTRUCTURA HTML SEMÁNTICA
+        - Uso de elementos semánticos para accesibilidad
+        - Form controls con labels apropiados
+        - ARIA attributes para lectores de pantalla
+        - Estructura modular para facilitar mantenimiento
+    -->
+</head>
+<body>
+    <!-- Header principal con información contextual -->
+    <header class="header">
+        <div class="container">
+            <h1 class="header__title">🔐 Generador de Contraseñas Seguras</h1>
+            <p class="header__subtitle">Crea contraseñas robustas para proteger tus cuentas digitales</p>
+        </div>
+    </header>
+
+    <!-- Contenedor principal de la aplicación -->
+    <main class="main">
+        <div class="container">
+            <!-- Sección del generador de contraseñas -->
+            <section class="generator" aria-label="Generador de contraseñas">
+                <!-- 
+                    FORMULARIO DE CONFIGURACIÓN
+                    - Controles agrupados semánticamente
+                    - Labels descriptivos para accesibilidad
+                    - IDs únicos para asociación form-control
+                -->
+                <form class="generator__form" id="passwordForm" role="form">
+                    <fieldset class="form-group">
+                        <legend class="form-group__title">Configuración de la Contraseña</legend>
+                        
+                        <!-- Control de longitud con slider -->
+                        <div class="form-control">
+                            <label for="lengthSlider" class="form-control__label">
+                                Longitud: <span id="lengthValue" class="form-control__value">12</span> caracteres
+                            </label>
+                            <input 
+                                type="range" 
+                                id="lengthSlider" 
+                                class="form-control__slider"
+                                min="4" 
+                                max="128" 
+                                value="12"
+                                aria-describedby="lengthHelp"
+                            >
+                            <small id="lengthHelp" class="form-control__help">
+                                Mínimo recomendado: 12 caracteres
+                            </small>
+                        </div>
+
+                        <!-- Opciones de caracteres con checkboxes -->
+                        <div class="form-control">
+                            <fieldset class="checkbox-group">
+                                <legend class="checkbox-group__title">Tipos de caracteres</legend>
+                                
+                                <div class="checkbox-item">
+                                    <input 
+                                        type="checkbox" 
+                                        id="includeUppercase" 
+                                        class="checkbox-item__input"
+                                        checked
+                                        aria-describedby="uppercaseHelp"
+                                    >
+                                    <label for="includeUppercase" class="checkbox-item__label">
+                                        Mayúsculas (A-Z)
+                                    </label>
+                                    <small id="uppercaseHelp" class="checkbox-item__help">
+                                        Recomendado para mayor seguridad
+                                    </small>
+                                </div>
+
+                                <div class="checkbox-item">
+                                    <input 
+                                        type="checkbox" 
+                                        id="includeLowercase" 
+                                        class="checkbox-item__input"
+                                        checked
+                                        aria-describedby="lowercaseHelp"
+                                    >
+                                    <label for="includeLowercase" class="checkbox-item__label">
+                                        Minúsculas (a-z)
+                                    </label>
+                                    <small id="lowercaseHelp" class="checkbox-item__help">
+                                        Base fundamental de cualquier contraseña
+                                    </small>
+                                </div>
+
+                                <div class="checkbox-item">
+                                    <input 
+                                        type="checkbox" 
+                                        id="includeNumbers" 
+                                        class="checkbox-item__input"
+                                        checked
+                                        aria-describedby="numbersHelp"
+                                    >
+                                    <label for="includeNumbers" class="checkbox-item__label">
+                                        Números (0-9)
+                                    </label>
+                                    <small id="numbersHelp" class="checkbox-item__help">
+                                        Aumenta la complejidad significativamente
+                                    </small>
+                                </div>
+
+                                <div class="checkbox-item">
+                                    <input 
+                                        type="checkbox" 
+                                        id="includeSymbols" 
+                                        class="checkbox-item__input"
+                                        checked
+                                        aria-describedby="symbolsHelp"
+                                    >
+                                    <label for="includeSymbols" class="checkbox-item__label">
+                                        Símbolos (!@#$%^&*)
+                                    </label>
+                                    <small id="symbolsHelp" class="checkbox-item__help">
+                                        Máximo nivel de seguridad
+                                    </small>
+                                </div>
+                            </fieldset>
+                        </div>
+
+                        <!-- Opciones avanzadas -->
+                        <div class="form-control">
+                            <fieldset class="checkbox-group">
+                                <legend class="checkbox-group__title">Opciones Avanzadas</legend>
+                                
+                                <div class="checkbox-item">
+                                    <input 
+                                        type="checkbox" 
+                                        id="excludeAmbiguous" 
+                                        class="checkbox-item__input"
+                                        aria-describedby="ambiguousHelp"
+                                    >
+                                    <label for="excludeAmbiguous" class="checkbox-item__label">
+                                        Excluir caracteres ambiguos (0, O, l, I)
+                                    </label>
+                                    <small id="ambiguousHelp" class="checkbox-item__help">
+                                        Evita confusiones al escribir la contraseña
+                                    </small>
+                                </div>
+                            </fieldset>
+                        </div>
+                    </fieldset>
+
+                    <!-- Botón de generación -->
+                    <div class="form-actions">
+                        <button 
+                            type="button" 
+                            id="generateBtn" 
+                            class="btn btn--primary btn--large"
+                            aria-describedby="generateHelp"
+                        >
+                            🔄 Generar Nueva Contraseña
+                        </button>
+                        <small id="generateHelp" class="form-actions__help">
+                            Se genera automáticamente al cambiar configuraciones
+                        </small>
+                    </div>
+                </form>
+
+                <!-- 
+                    SECCIÓN DE RESULTADO
+                    - Display de la contraseña generada
+                    - Indicador visual de seguridad
+                    - Acciones de usuario (copiar, regenerar)
+                -->
+                <section class="result" aria-label="Resultado generado">
+                    <!-- Contraseña generada -->
+                    <div class="password-display">
+                        <label for="generatedPassword" class="password-display__label">
+                            Contraseña Generada:
+                        </label>
+                        <div class="password-display__container">
+                            <input 
+                                type="text" 
+                                id="generatedPassword" 
+                                class="password-display__input"
+                                readonly
+                                placeholder="Tu contraseña aparecerá aquí..."
+                                aria-describedby="passwordStrength"
+                            >
+                            <button 
+                                type="button" 
+                                id="copyBtn" 
+                                class="btn btn--secondary btn--icon"
+                                title="Copiar al portapapeles"
+                                aria-label="Copiar contraseña al portapapeles"
+                                disabled
+                            >
+                                📋
+                            </button>
+                            <button 
+                                type="button" 
+                                id="toggleVisibility" 
+                                class="btn btn--secondary btn--icon"
+                                title="Mostrar/Ocultar contraseña"
+                                aria-label="Alternar visibilidad de la contraseña"
+                                disabled
+                            >
+                                👁️
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Indicador de seguridad -->
+                    <div class="strength-meter" id="strengthMeter">
+                        <div class="strength-meter__label">
+                            <span>Nivel de Seguridad:</span>
+                            <span id="strengthText" class="strength-meter__text">-</span>
+                        </div>
+                        <div class="strength-meter__bar">
+                            <div id="strengthBar" class="strength-meter__fill" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100">
+                            </div>
+                        </div>
+                        <div id="strengthDetails" class="strength-meter__details">
+                            <div class="strength-details">
+                                <div class="strength-details__item">
+                                    <span class="strength-details__label">Entropía:</span>
+                                    <span id="entropyValue" class="strength-details__value">0 bits</span>
+                                </div>
+                                <div class="strength-details__item">
+                                    <span class="strength-details__label">Tiempo estimado de descifrado:</span>
+                                    <span id="crackTimeValue" class="strength-details__value">-</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Feedback y recomendaciones -->
+                    <div id="feedback" class="feedback" aria-live="polite">
+                        <!-- Las recomendaciones se insertarán dinámicamente -->
+                    </div>
+                </section>
+            </section>
+
+            <!-- Sección educativa -->
+            <aside class="education" aria-label="Información educativa">
+                <h2 class="education__title">💡 Consejos de Seguridad</h2>
+                <div class="tips-grid">
+                    <div class="tip-card">
+                        <h3 class="tip-card__title">🔢 Longitud Mínima</h3>
+                        <p class="tip-card__content">
+                            Usa al menos 12 caracteres. Cada carácter adicional 
+                            multiplica exponencialmente la seguridad.
+                        </p>
+                    </div>
+                    <div class="tip-card">
+                        <h3 class="tip-card__title">🔄 Diversidad</h3>
+                        <p class="tip-card__content">
+                            Combina mayúsculas, minúsculas, números y símbolos 
+                            para crear contraseñas más robustas.
+                        </p>
+                    </div>
+                    <div class="tip-card">
+                        <h3 class="tip-card__title">🔐 Unicidad</h3>
+                        <p class="tip-card__content">
+                            Nunca reutilices contraseñas entre diferentes cuentas. 
+                            Cada servicio debe tener su contraseña única.
+                        </p>
+                    </div>
+                    <div class="tip-card">
+                        <h3 class="tip-card__title">🗂️ Gestor</h3>
+                        <p class="tip-card__content">
+                            Usa un gestor de contraseñas confiable para 
+                            almacenar y organizar tus credenciales de forma segura.
+                        </p>
+                    </div>
+                </div>
+            </aside>
+        </div>
+    </main>
+
+    <!-- Footer con información adicional -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer__content">
+                <p class="footer__text">
+                    🛡️ <strong>Privacidad garantizada:</strong> 
+                    Todas las contraseñas se generan localmente en tu navegador. 
+                    No se almacenan ni transmiten datos.
+                </p>
+                <p class="footer__text">
+                    ⚡ Desarrollado con HTML5, CSS3 y JavaScript vanilla para 
+                    máximo rendimiento y seguridad.
+                </p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Script principal -->
+    <script src="js/main.js"></script>
+
+    <!-- 
+        CONSIDERACIONES DE ACCESIBILIDAD:
+        - Uso de elementos semánticos (header, main, section, aside)
+        - Labels apropiados para todos los controles
+        - ARIA attributes para mejorar la experiencia con lectores de pantalla
+        - Estructura lógica con headings jerárquicos
+        - Contraste adecuado definido en CSS
+        - Navegación por teclado soportada
+        
+        CONSIDERACIONES DE SEGURIDAD:
+        - Sin persistencia de datos (no localStorage/sessionStorage)
+        - Generación completamente client-side
+        - Inputs readonly para evitar modificación accidental
+        - Feedback educativo sobre mejores prácticas
+    -->
+</body>
+</html>
